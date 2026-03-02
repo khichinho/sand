@@ -294,14 +294,19 @@ class Engine {
         }
         else if (el === Elements.OIL) {
             if (this.checkNeighbors(x, y, [Elements.FIRE_0, Elements.FIRE_1, Elements.FIRE_2, Elements.FIRE_3, Elements.TORCH, Elements.LAVA])) {
-                // Occasionally consume the oil itself
-                if (Math.random() < 0.05) {
-                    this.setElement(x, y, Elements.FIRE_2);
-                    return;
+                // Oil burns like a slow sustained fuel — stays as liquid and keeps producing fire
+                // High chance to spawn ambient fire in surrounding blank spaces (like coal sustaining flames)
+                if (Math.random() < 0.8) {
+                    const dx = Math.floor(Math.random() * 3) - 1;
+                    const dy = Math.floor(Math.random() * 3) - 1;
+                    if (this.getElement(x + dx, y + dy) === Elements.BLANK) {
+                        this.setElement(x + dx, y + dy, Elements.FIRE_2);
+                    }
                 }
-                // Otherwise, spawn much more fire above the oil so it acts as sustained fuel
-                else if (Math.random() < 0.10 && this.getElement(x, y - 1) === Elements.BLANK) {
-                    this.setElement(x, y - 1, Elements.FIRE_2);
+                // Very slow self-consumption (~8 seconds at 60 FPS, similar to coal)
+                if (Math.random() < 0.002) {
+                    this.setElement(x, y, Elements.BLANK); // Oil burns away cleanly (no ash)
+                    return;
                 }
             }
         }
