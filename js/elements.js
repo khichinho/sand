@@ -125,6 +125,6 @@ const ElementCategories = {
     'Advanced': [
         Elements.STEAM, Elements.LAVA, Elements.ICE, Elements.WOOD, Elements.COAL, Elements.SNOW,
         Elements.GAS, Elements.LIQUID_NITROGEN, Elements.TNT, Elements.NAPALM, Elements.FUSE,
-        Elements.FIRECRACKER, Elements.WORMHOLE
+        Elements.WORMHOLE, Elements.FIRECRACKER,
     ]
 };

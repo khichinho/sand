@@ -647,6 +647,24 @@ class Engine {
 
     // Helper for Fire states
     updateFire(x, y, el) {
+        // Water dampens fire - downgrades by one fire tier when touching water/salt water
+        if (el >= Elements.FIRE_0 && el <= Elements.FIRE_3) {
+            if (this.checkNeighbors(x, y, [Elements.WATER, Elements.SALT_WATER])) {
+                if (Math.random() < 0.6) { // 60% chance per frame to be dampened
+                    if (el === Elements.FIRE_0) {
+                        this.setElement(x, y, Elements.BLANK); // weakest tier just gets snuffed out
+                    } else if (el === Elements.FIRE_1) {
+                        this.setElement(x, y, Elements.FIRE_0);
+                    } else if (el === Elements.FIRE_2) {
+                        this.setElement(x, y, Elements.FIRE_1);
+                    } else if (el === Elements.FIRE_3) {
+                        this.setElement(x, y, Elements.FIRE_2);
+                    }
+                    return;
+                }
+            }
+        }
+
         // Rise up randomly
         if (el === Elements.FIRE_0 || el === Elements.FIRE_1) {
             const dx = Math.floor(Math.random() * 3) - 1;
@@ -836,12 +854,12 @@ class Engine {
                     }
                 }
 
-                // Slow-burn self-consumption (Wood = ~4 seconds, Coal = ~7 seconds at 60 FPS)
-                // When completely consumed, leave behind a single grain of solid ASH
+                // Slow-burn self-consumption (Wood = ~4 seconds, Coal = ~20 seconds at 60 FPS)
+                // When completely consumed, only 25% chance to leave behind ASH (less clutter)
                 if (el === Elements.WOOD && Math.random() < 0.004) {
-                    this.setElement(x, y, Elements.ASH);
-                } else if (el === Elements.COAL && Math.random() < 0.0024) {
-                    this.setElement(x, y, Elements.ASH);
+                    this.setElement(x, y, Math.random() < 0.25 ? Elements.ASH : Elements.BLANK);
+                } else if (el === Elements.COAL && Math.random() < 0.0007) {
+                    this.setElement(x, y, Math.random() < 0.05 ? Elements.ASH : Elements.BLANK);
                 }
             }
         }

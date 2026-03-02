@@ -170,8 +170,13 @@ class Input {
 
         // Set border color hint
         if (id === Elements.FIRECRACKER) {
-            btn.style.borderBottom = '4px solid';
-            btn.style.borderImage = 'repeating-linear-gradient(45deg, #FF3296, #FF3296 4px, #FFFFFF 4px, #FFFFFF 8px) 1';
+            // border-image only renders where border-width > 0
+            // Zero out top/left/right so stripe only shows on bottom
+            btn.style.borderTop = '0px solid transparent';
+            btn.style.borderLeft = '0px solid transparent';
+            btn.style.borderRight = '0px solid transparent';
+            btn.style.borderBottom = '4px solid transparent';
+            btn.style.borderImage = 'repeating-linear-gradient(90deg, #FF3296, #FF3296 4px, #FFFFFF 4px, #FFFFFF 8px) 0 0 1 0';
         } else {
             const c = ElementColors[id];
             if (c !== undefined && c !== 0) {
