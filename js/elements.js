@@ -127,9 +127,10 @@ const ElementCategories = {
         // , Elements.SALT, Elements.WAX
     ],
     'Advanced': [
-        Elements.STEAM, Elements.LAVA, Elements.ICE, Elements.WOOD, Elements.NAPALM,
-        Elements.COAL, Elements.SNOW, Elements.GAS, Elements.TNT, Elements.FUSE,
-        Elements.WORMHOLE, Elements.FIRECRACKER
+        Elements.STEAM, Elements.ICE, Elements.SNOW, Elements.LAVA,
+        Elements.WOOD, Elements.COAL, Elements.FUSE,
+        Elements.GAS, Elements.TNT, Elements.NAPALM, Elements.FIRECRACKER,
+        Elements.WORMHOLE,
         // , Elements.LIQUID_NITROGEN
     ]
 };
@@ -145,7 +146,7 @@ function generateAllVariants() {
     for (const idStr in ElementColors) {
         const id = parseInt(idStr);
         const baseColor = ElementColors[id];
-        
+
         if (id === Elements.BLANK) {
             for (let v = 0; v < 8; v++) ElementColorVariants[id * 8 + v] = baseColor;
             continue;
@@ -162,7 +163,7 @@ function generateAllVariants() {
             // Variations are tied to the variant index (v) so particles keep their shade while moving
             const step = (v - 3.5) * 4.5; // Offset range from ~-15 to +15
             const clamp = (val) => Math.max(0, Math.min(255, Math.floor(val + step)));
-            
+
             // Re-pack into ABGR
             ElementColorVariants[id * 8 + v] = (a << 24) | (clamp(b) << 16) | (clamp(g) << 8) | clamp(r);
         }
