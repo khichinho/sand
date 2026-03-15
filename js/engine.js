@@ -13,6 +13,11 @@ class Engine {
         // The Simulation Grid: stores the Element ID for each pixel
         this.grid = new Uint8Array(this.width * this.height);
         this.frameCount = 0;
+        
+        // Simulation state
+        this.isPaused = false;
+        this.stepRequested = false;
+
         this.clear();
 
         this.setupCanvas();
@@ -111,6 +116,12 @@ class Engine {
     }
 
     step() {
+        if (this.isPaused && !this.stepRequested) {
+            return;
+        }
+        
+        this.stepRequested = false;
+        
         // Iterate from bottom to top, randomly left-to-right or right-to-left
         for (let y = this.height - 1; y >= 0; y--) {
             // Processing direction alternates to prevent elements from always drifting one way

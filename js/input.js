@@ -61,6 +61,22 @@ class Input {
             this.updateBrushPreview();
             this.updateCanvasCursor();
         });
+        
+        // Simulation Controls
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const playPausePath = document.getElementById('play-pause-path');
+        const PATH_PLAY = 'M6,3 h1 v1 h1 v1 h1 v1 h1 v1 h1 v2 h-1 v1 h-1 v1 h-1 v1 h-1 v1 h-1 z';
+        const PATH_PAUSE = 'M4,3 h2 v10 h-2 z M9,3 h2 v10 h-2 z';
+        
+        if (playPauseBtn && playPausePath) {
+            // Initial state
+            playPausePath.setAttribute('d', this.engine.isPaused ? PATH_PLAY : PATH_PAUSE);
+
+            playPauseBtn.addEventListener('click', () => {
+                this.engine.isPaused = !this.engine.isPaused;
+                playPausePath.setAttribute('d', this.engine.isPaused ? PATH_PLAY : PATH_PAUSE);
+            });
+        }
     }
 
     updateMousePos(e) {

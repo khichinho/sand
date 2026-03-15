@@ -124,6 +124,40 @@ body {
     user-select: none;
 }
 
+#simulation-controls {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 55px;
+    box-sizing: border-box;
+    display: flex;
+    z-index: 10;
+}
+
+.pixel-btn {
+    background-color: var(--ui-bg);
+    color: white;
+    border: none;
+    border-bottom: 2px solid var(--ui-border);
+    border-left: 2px solid var(--ui-border);
+    border-right: 2px solid var(--ui-border);
+    border-radius: 0;
+    padding: 0 20px;
+    height: 100%;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pixel-btn:hover {
+    background-color: #555;
+    border-color: white;
+}
+
 #brush-preview-container {
     width: 55px;
     height: 55px;
