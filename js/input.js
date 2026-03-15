@@ -104,38 +104,62 @@ class Input {
         // Compute the effective radius in grid pixels that matches the cursor's visual size
         // cursor shows brushSize pixels at displayScale, on canvas each grid pixel = Config.SCALE CSS px
         const r = Math.max(1, Math.round(this.brushSize * this.displayScale / Config.SCALE));
+        const rSquared = r * r;
+
         for (let i = -r; i <= r; i++) {
             for (let j = -r; j <= r; j++) {
-                if (i * i + j * j <= r * r) { // Circular brush
-                    const px = this.mouseX + i;
-                    const py = this.mouseY + j;
-                    // For now, raw placement. Later we might want to probabilistically place things
-                    this.engine.setElement(px, py, this.currentElement);
+                const distSquared = i * i + j * j;
+                if (distSquared <= rSquared) { // Circular brush
+                    // Calculate probability based on distance from center
+                    // Probability is 1 at the center, falling off to 0 at the edge
+                    const probability = 1 - (distSquared / rSquared);
+
+                    if (Math.random() < probability) {
+                        const px = this.mouseX + i;
+                        const py = this.mouseY + j;
+                        this.engine.setElement(px, py, this.currentElement);
+                    }
                 }
             }
         }
     }
 
     setupUI() {
-        const select = document.getElementById('category-select');
+        const tabsContainer = document.getElementById('folder-tabs');
+        if (!tabsContainer) return;
 
-        // Populate dropdown options
+        // Populate folder tabs
         Object.keys(ElementCategories).forEach(catName => {
-            const opt = document.createElement('option');
-            opt.value = catName;
-            opt.innerText = catName;
-            select.appendChild(opt);
+            const tab = document.createElement('div');
+            tab.className = 'folder-tab';
+            tab.innerText = catName;
+            tab.dataset.category = catName;
+            
+            tab.onclick = () => {
+                // UI Switch
+                document.querySelectorAll('.folder-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Content Switch
+                this.renderCategory(catName);
+                
+                // Refresh engine layout if needed
+                if (this.engine.resize) this.engine.resize();
+            };
+
+            tabsContainer.appendChild(tab);
         });
 
-        // Listen for changes
-        select.addEventListener('change', (e) => {
-            this.renderCategory(e.target.value);
-            // Tell the engine to immediately resize if needed when tool changes to prevent layout shift
-            if (this.engine.resize) this.engine.resize();
-        });
+        // Initial render: Select "Basic" category
+        const initialTab = Array.from(tabsContainer.children).find(t => t.dataset.category === 'Basic');
+        if (initialTab) {
+            initialTab.classList.add('active');
+            this.renderCategory('Basic');
+        }
 
-        // Initial render
-        this.renderCategory('Basic');
+        // IMPORTANT: Resize engine after UI population to account for the footer height
+        if (this.engine.resize) this.engine.resize();
+
         this.updateBrushPreview();
         this.updateCanvasCursor();
     }
@@ -281,19 +305,14 @@ class Input {
         btn.innerHTML = `${iconHtml}<span>${name}</span>`;
 
         // Restore bottom border color hint
-        if (id === Elements.FIRECRACKER) {
-            btn.style.borderBottom = '4px solid transparent';
-            btn.style.borderImage = 'repeating-linear-gradient(90deg, #FF3296, #FF3296 4px, #FFFFFF 4px, #FFFFFF 8px) 0 0 1 0';
+        const c = ElementColors[id];
+        if (c !== undefined && c !== 0) {
+            const r = c & 0xFF;
+            const g = (c >> 8) & 0xFF;
+            const b = (c >> 16) & 0xFF;
+            btn.style.borderBottom = `4px solid rgb(${r},${g},${b})`;
         } else {
-            const c = ElementColors[id];
-            if (c !== undefined && c !== 0) {
-                const r = c & 0xFF;
-                const g = (c >> 8) & 0xFF;
-                const b = (c >> 16) & 0xFF;
-                btn.style.borderBottom = `4px solid rgb(${r},${g},${b})`;
-            } else {
-                btn.style.borderBottom = `4px solid #fff`; // Eraser fallback
-            }
+            btn.style.borderBottom = `4px solid #fff`; // Eraser fallback
         }
 
         if (id === this.currentElement) {

@@ -35,6 +35,7 @@ const Elements = {
     ASH: 26,
     FUSE: 27,
     FIRECRACKER: 28,
+    COAL_GLOWING: 36,
     SPARK_RED: 29,
     SPARK_GREEN: 30,
     SPARK_BLUE: 31,
@@ -73,6 +74,7 @@ const ElementColors = {
     [Elements.NAPALM]: rgb(0, 106, 78),       // Bottle green
     [Elements.WOOD]: rgb(139, 69, 19),        // Rich brown
     [Elements.COAL]: rgb(40, 40, 40),         // Dark charcoal
+    [Elements.COAL_GLOWING]: rgb(255, 69, 0), // Fiery glowing orange
     [Elements.ASH]: rgb(105, 105, 105),       // Ashen grey
     [Elements.FUSE]: rgb(255, 255, 255),      // Pure white
     [Elements.FIRECRACKER]: rgb(255, 192, 203), // Pinkish white
@@ -110,6 +112,7 @@ const ElementNames = {
     [Elements.NAPALM]: 'NAPALM',
     [Elements.WOOD]: 'WOOD',
     [Elements.COAL]: 'COAL',
+    [Elements.COAL_GLOWING]: 'COAL',
     [Elements.FUSE]: 'FUSE',
     [Elements.FIRECRACKER]: 'FIRECRACKER',
     [Elements.WORMHOLE]: 'WORMHOLE',
@@ -119,12 +122,14 @@ const ElementNames = {
 const ElementCategories = {
     'Basic': [
         Elements.BLANK, Elements.SAND, Elements.WATER, Elements.WALL, Elements.PLANT,
-        Elements.FIRE_0, Elements.SALT, Elements.OIL, Elements.CONCRETE,
-        Elements.WAX, Elements.TORCH, Elements.SPOUT
+        Elements.FIRE_0, Elements.OIL, Elements.CONCRETE,
+        Elements.TORCH, Elements.SPOUT
+        // , Elements.SALT, Elements.WAX
     ],
     'Advanced': [
-        Elements.STEAM, Elements.LAVA, Elements.ICE, Elements.WOOD, Elements.COAL, Elements.SNOW,
-        Elements.GAS, Elements.LIQUID_NITROGEN, Elements.TNT, Elements.NAPALM, Elements.FUSE,
-        Elements.WORMHOLE, Elements.FIRECRACKER,
+        Elements.STEAM, Elements.LAVA, Elements.ICE, Elements.WOOD, Elements.NAPALM,
+        Elements.COAL, Elements.SNOW, Elements.GAS, Elements.TNT, Elements.FUSE,
+        Elements.WORMHOLE, Elements.FIRECRACKER
+        // , Elements.LIQUID_NITROGEN
     ]
 };

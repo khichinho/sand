@@ -35,42 +35,71 @@ body {
 }
 
 #ui-panel {
-    background-color: var(--ui-bg);
-    padding: 10px;
+    background-color: transparent;
     display: flex;
-    flex-wrap: wrap;
-    /* Allow wrapping if window is too narrow */
-    gap: 10px;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 2px solid var(--ui-border);
+    flex-direction: column;
     flex-shrink: 0;
-    /* Prevent panel from squishing */
 }
 
-#category-select {
-    background-color: #000;
-    color: #fff;
-    border: 1px solid var(--ui-border);
-    padding: 5px;
+#folder-tabs {
+    display: flex;
+    gap: 1px;
+    padding-left: 20px;
+    background: transparent;
+    pointer-events: auto;
+}
+
+.folder-tab {
+    padding: 5px 15px;
+    background: #444;
+    color: #888;
     font-family: monospace;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 13px;
     cursor: pointer;
+    border: 1px solid var(--ui-border);
+    border-bottom: none;
+    border-radius: 0; /* Angled/Square corners */
+    transition: all 0.1s;
+    user-select: none;
+    position: relative;
+    top: 2px;
+}
+
+.folder-tab:hover {
+    background: #555;
+    color: #eee;
+}
+
+.folder-tab.active {
+    background: var(--ui-bg);
+    color: #fff;
+    border-top: 2px solid #fff;
+    border-left: 2px solid #eee;
+    border-right: 2px solid var(--ui-border);
+    z-index: 2;
+    top: 2px; /* Sits perfectly on the border */
+    padding-top: 7px;
 }
 
 #element-palette {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    flex: 1 1 auto;
-    /* Allow it to flex and take available space */
-    max-width: 100%;
+    padding: 10px 10px 15px 10px; /* Extra bottom pad to prevent cutting */
+    background-color: var(--ui-bg);
+    border-top: 2px solid #eee;
+    border-left: 1px solid var(--ui-border);
+    border-right: 1px solid var(--ui-border);
+    min-height: 50px;
+    pointer-events: auto;
 }
 
 .element-btn {
-    background: #000;
-    border: 1px solid var(--ui-border);
+    background: #222;
+    border: 2px solid var(--ui-border);
+    border-top-color: #555;
+    border-left-color: #555;
     color: white;
     padding: 5px 10px;
     cursor: pointer;
@@ -80,7 +109,7 @@ body {
     display: flex;
     gap: 8px;
     align-items: center;
-    transition: filter 0.1s;
+    box-shadow: inset 1px 1px 0px rgba(255,255,255,0.1);
 }
 
 .element-btn img, .element-btn svg {
@@ -94,8 +123,11 @@ body {
 }
 
 .element-btn.selected {
-    border-color: white;
-    outline: 2px solid white;
+    background: #444;
+    border-color: #fff;
+    border-bottom-color: #888;
+    border-right-color: #888;
+    box-shadow: 0 0 10px rgba(255,255,255,0.2);
 }
 
 #brush-controls {
