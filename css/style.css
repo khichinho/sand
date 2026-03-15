@@ -77,6 +77,16 @@ body {
     font-family: monospace;
     font-weight: bold;
     user-select: none;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    transition: filter 0.1s;
+}
+
+.element-btn img, .element-btn svg {
+    width: 20px;
+    height: 20px;
+    pointer-events: none; /* Let clicks pass to button */
 }
 
 .element-btn:hover {
