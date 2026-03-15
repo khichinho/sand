@@ -21,10 +21,10 @@ body {
 }
 
 #game-container {
-    display: flex;
-    flex-direction: column;
+    position: relative;
     width: 100vw;
     height: 100vh;
+    background-color: #000;
 }
 
 /* The canvas will be scaled up via CSS to look chunky/pixelated */
@@ -35,17 +35,35 @@ body {
 }
 
 #ui-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     background-color: transparent;
     display: flex;
     flex-direction: column;
-    flex-shrink: 0;
+    z-index: 20;
+    pointer-events: none; /* Let drawing pass through transparent areas */
 }
 
 #folder-tabs {
     display: flex;
     gap: 1px;
-    padding-left: 20px;
     background: transparent;
+    pointer-events: auto;
+}
+
+#ui-tabs-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 10px;
+    width: 100%;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+#ui-tabs-row > * {
     pointer-events: auto;
 }
 
@@ -167,29 +185,19 @@ body {
 }
 
 #simulation-controls {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 55px;
-    box-sizing: border-box;
     display: flex;
     z-index: 10;
 }
 
 .pixel-btn {
-    background-color: var(--ui-bg);
+    background-color: #444;
     color: white;
-    border: none;
-    border-bottom: 2px solid var(--ui-border);
-    border-left: 2px solid var(--ui-border);
-    border-right: 2px solid var(--ui-border);
-    border-radius: 0;
-    padding: 0 20px;
-    height: 100%;
+    border: 1px solid var(--ui-border);
+    border-bottom: none;
+    padding: 5px 15px;
+    height: 30px;
     cursor: pointer;
     user-select: none;
-    box-shadow: none;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -247,4 +255,36 @@ body {
 
 #brush-size:focus {
     outline: none;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 500px) {
+    #debug-info, #brush-controls {
+        height: 45px;
+        font-size: 14px;
+        padding: 0 10px;
+    }
+
+    #brush-preview-container {
+        width: 45px;
+        height: 45px;
+    }
+
+    #brush-size {
+        width: 60px; /* Shorter slider on phones */
+        margin-left: 10px;
+    }
+
+    #ui-tabs-row {
+        padding: 0 5px;
+    }
+
+    .folder-tab {
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+
+    .pixel-btn {
+        padding: 0 10px;
+    }
 }
