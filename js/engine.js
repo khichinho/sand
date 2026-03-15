@@ -859,8 +859,26 @@ class Engine {
             }
         }
         else if (el === Elements.PLANT) {
-            if (isHot) {
-                this.setElement(x, y, Elements.FIRE_2);
+            // Check for heat sources including existing fire/lava
+            const hotSource = isHot || this.checkNeighbors(x, y, [Elements.FIRE_2, Elements.FIRE_3, Elements.LAVA, Elements.NAPALM]);
+
+            if (hotSource) {
+                // EXTREMELY slow propagation: 2% chance to ignite per frame of contact
+                if (Math.random() < 0.1) {
+                    this.setElement(x, y, Elements.FIRE_2);
+
+                    // 5% chance to instantly ignite adjacent plant pixels (controlled crawl)
+                    if (Math.random() < 0.2) {
+                        for (let dy = -1; dy <= 1; dy++) {
+                            for (let dx = -1; dx <= 1; dx++) {
+                                if (dx === 0 && dy === 0) continue;
+                                if (this.getElement(x + dx, y + dy) === Elements.PLANT) {
+                                    this.setElement(x + dx, y + dy, Elements.FIRE_2);
+                                }
+                            }
+                        }
+                    }
+                }
             } else {
                 // Grow upwards slowly
                 if (Math.random() < 0.005) { // Very low probability each frame
@@ -1039,7 +1057,7 @@ class Engine {
                         // Firecracker (RAINBOW) streaks are decorative and rarely break hard walls
                         // TNT and Napalm streaks remain powerful demolition tools
                         const wallPierceChance = (s.overrideColor === 'RAINBOW') ? 0.05 : 0.50;
-                        
+
                         if (Math.random() < wallPierceChance) {
                             this.setElement(sx, sy, Elements.FIRE_3);
                         } else {
