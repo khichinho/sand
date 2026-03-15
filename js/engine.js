@@ -12,6 +12,8 @@ class Engine {
 
         // The Simulation Grid: stores the Element ID for each pixel
         this.grid = new Uint8Array(this.width * this.height);
+        // Stores color variant index (0-7) for each pixel to create the "speckled" look
+        this.colorVariants = new Uint8Array(this.width * this.height);
         this.frameCount = 0;
 
         // Simulation state
@@ -50,21 +52,26 @@ class Engine {
         if (newWidth === this.width && newHeight === this.height) return;
 
         const newGrid = new Uint8Array(newWidth * newHeight);
+        const newVariants = new Uint8Array(newWidth * newHeight);
         newGrid.fill(Elements.BLANK);
 
-        // Copy old grid to new grid boundary
+        // Copy old data to new grid boundary
         const minW = Math.min(this.width, newWidth);
         const minH = Math.min(this.height, newHeight);
 
         for (let y = 0; y < minH; y++) {
             for (let x = 0; x < minW; x++) {
-                newGrid[y * newWidth + x] = this.grid[y * this.width + x];
+                const newIdx = y * newWidth + x;
+                const oldIdx = y * this.width + x;
+                newGrid[newIdx] = this.grid[oldIdx];
+                newVariants[newIdx] = this.colorVariants[oldIdx];
             }
         }
 
         this.width = newWidth;
         this.height = newHeight;
         this.grid = newGrid;
+        this.colorVariants = newVariants;
 
         Config.GRID_WIDTH = newWidth;
         Config.GRID_HEIGHT = newHeight;
@@ -99,7 +106,10 @@ class Engine {
     // Set the element at (x, y)
     setElement(x, y, el) {
         if (this.inBounds(x, y)) {
-            this.grid[this.getIndex(x, y)] = el;
+            const i = this.getIndex(x, y);
+            this.grid[i] = el;
+            // Assign a random color variant index (0-7)
+            this.colorVariants[i] = Math.floor(Math.random() * 8);
         }
     }
 
@@ -113,9 +123,16 @@ class Engine {
 
         const i1 = this.getIndex(x1, y1);
         const i2 = this.getIndex(x2, y2);
-        const temp = this.grid[i1];
+        
+        // Swap IDs
+        const tempEl = this.grid[i1];
         this.grid[i1] = this.grid[i2];
-        this.grid[i2] = temp;
+        this.grid[i2] = tempEl;
+
+        // Swap color variants so the grain shade follows the particle
+        const tempV = this.colorVariants[i1];
+        this.colorVariants[i1] = this.colorVariants[i2];
+        this.colorVariants[i2] = tempV;
     }
 
     /**
@@ -1143,7 +1160,7 @@ class Engine {
         const target = this.getElement(x, y);
         return target === Elements.WATER || target === Elements.SALT_WATER ||
             target === Elements.OIL || target === Elements.LIQUID_NITROGEN ||
-            target === Elements.LAVA;
+            target === Elements.LAVA || target === Elements.NAPALM;
     }
 
     // HSL (Hue, Saturation, Lightness) to 32-bit packed RGB helper
@@ -1183,14 +1200,13 @@ class Engine {
             const el = this.grid[i];
 
             if (el === Elements.FIRECRACKER) {
-                // Alternating white and bright pink speckles based on grid position (checkerboard pattern)
-                // 0xFFFFFFFF = Pure White (ABGR)
-                // 0xFFB432FF = Bright Pink RGB(255, 50, 180) -> ABGR(255, 180, 50, 255)
                 const x = i % this.width;
                 const y = Math.floor(i / this.width);
                 this.view[i] = ((x + y) % 2 === 0) ? 0xFFFFFFFF : 0xFFB432FF;
             } else {
-                const color = ElementColors[el];
+                // Use the variant lookup table for the "speckled" look
+                const v = this.colorVariants[i];
+                const color = ElementColorVariants[(el << 3) | v];
                 this.view[i] = color !== undefined ? color : 0xFF000000;
             }
         }

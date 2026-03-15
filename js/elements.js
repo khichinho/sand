@@ -133,3 +133,40 @@ const ElementCategories = {
         // , Elements.LIQUID_NITROGEN
     ]
 };
+
+/**
+ * Pre-calculated lookup table for color variation.
+ * Stores 8 variants for each element ID to create the organic "speckled" look
+ * seen in Sandboxels.
+ */
+const ElementColorVariants = new Uint32Array(256 * 8);
+
+function generateAllVariants() {
+    for (const idStr in ElementColors) {
+        const id = parseInt(idStr);
+        const baseColor = ElementColors[id];
+        
+        if (id === Elements.BLANK) {
+            for (let v = 0; v < 8; v++) ElementColorVariants[id * 8 + v] = baseColor;
+            continue;
+        }
+
+        // Extract components from packed ABGR integer
+        const r = baseColor & 0xFF;
+        const g = (baseColor >> 8) & 0xFF;
+        const b = (baseColor >> 16) & 0xFF;
+        const a = (baseColor >> 24) & 0xFF;
+
+        for (let v = 0; v < 8; v++) {
+            // Create a spectrum of shades based on the variant index
+            // Variations are tied to the variant index (v) so particles keep their shade while moving
+            const step = (v - 3.5) * 4.5; // Offset range from ~-15 to +15
+            const clamp = (val) => Math.max(0, Math.min(255, Math.floor(val + step)));
+            
+            // Re-pack into ABGR
+            ElementColorVariants[id * 8 + v] = (a << 24) | (clamp(b) << 16) | (clamp(g) << 8) | clamp(r);
+        }
+    }
+}
+
+generateAllVariants();
