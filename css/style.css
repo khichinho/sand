@@ -15,7 +15,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100dvh; /* dvh = dynamic viewport height, respects mobile browser chrome */
     overflow: hidden;
     /* Prevent scrolling when drawing */
 }
@@ -23,7 +23,7 @@ body {
 #game-container {
     position: relative;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh; /* dvh accounts for mobile browser chrome */
     background-color: #000;
 }
 
@@ -107,6 +107,8 @@ body {
     overflow-y: hidden;
     gap: 5px;
     padding: 10px 10px 15px 10px; /* Extra bottom pad to prevent cutting */
+    /* On mobile, add padding for the phone's home indicator / nav bar */
+    padding-bottom: calc(15px + env(safe-area-inset-bottom));
     background-color: var(--ui-bg);
     border-top: 2px solid #eee;
     border-left: 1px solid var(--ui-border);
