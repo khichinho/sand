@@ -102,7 +102,9 @@ body {
 
 #element-palette {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
     gap: 5px;
     padding: 10px 10px 15px 10px; /* Extra bottom pad to prevent cutting */
     background-color: var(--ui-bg);
@@ -111,6 +113,13 @@ body {
     border-right: 1px solid var(--ui-border);
     min-height: 50px;
     pointer-events: auto;
+    
+    /* Hide scrollbar for a cleaner look */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+#element-palette::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
 }
 
 .element-btn {
@@ -281,10 +290,22 @@ body {
 
     .folder-tab {
         padding: 4px 10px;
-        font-size: 12px;
+        font-size: 11px;
     }
 
     .pixel-btn {
-        padding: 0 10px;
+        padding: 0 8px;
+        height: 26px;
+    }
+
+    /* Shrink the element buttons themselves on narrow screens */
+    .element-btn {
+        padding: 4px 6px;
+        font-size: 11px;
+        gap: 4px;
+    }
+    .element-btn img, .element-btn svg {
+        width: 16px;
+        height: 16px;
     }
 }
