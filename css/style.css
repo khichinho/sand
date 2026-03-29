@@ -110,9 +110,15 @@ body {
 
 #element-palette {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch; /* Momentum scrolling on iOS */
+    width: 100vw; /* Force strict width */
+    max-width: 100%;
+    box-sizing: border-box; /* Prevent padding from adding to width */
     gap: 5px;
-    padding: 10px 10px 15px 10px; /* Extra bottom pad to prevent cutting */
+    padding: 10px; /* Reduced side paddings to fit screen better on mobile */
     /* On mobile, add padding for the phone's home indicator / nav bar */
     padding-bottom: calc(15px + env(safe-area-inset-bottom));
     background-color: var(--ui-bg);
@@ -121,9 +127,6 @@ body {
     border-right: 1px solid var(--ui-border);
     min-height: 50px;
     pointer-events: auto;
-}
-#element-palette::-webkit-scrollbar {
-    display: none; /* Chrome, Safari and Opera */
 }
 
 .element-btn {
