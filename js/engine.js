@@ -41,10 +41,14 @@ class Engine {
         const availableWidth = window.innerWidth;
         let availableHeight = window.innerHeight;
 
-        // Subtract the height of the element palette so particles don't hide behind it
-        const palette = document.getElementById('element-palette');
-        if (palette) {
-            availableHeight -= palette.getBoundingClientRect().height;
+        // Subtract the entire UI panel height (tabs + palette)
+        // Hide canvas momentarily so it doesn't inflate the container in flex layouts
+        const uiPanel = document.getElementById('ui-panel');
+        if (uiPanel) {
+            const oldDisplay = this.canvas.style.display;
+            this.canvas.style.display = 'none';
+            availableHeight -= uiPanel.getBoundingClientRect().height;
+            this.canvas.style.display = oldDisplay;
         }
 
         const newWidth = Math.max(1, Math.floor(availableWidth / Config.SCALE));
