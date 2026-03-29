@@ -38,13 +38,14 @@ class Engine {
     }
 
     resize() {
-        const uiPanel = document.getElementById('ui-panel');
-        // Hide canvas to let UI panel settle to its natural height without canvas pushing it
-        this.canvas.style.display = 'none';
-        const uiHeight = uiPanel.getBoundingClientRect().height;
-        const availableHeight = window.innerHeight - uiHeight;
         const availableWidth = window.innerWidth;
-        this.canvas.style.display = 'block';
+        let availableHeight = window.innerHeight;
+
+        // Subtract the height of the element palette so particles don't hide behind it
+        const palette = document.getElementById('element-palette');
+        if (palette) {
+            availableHeight -= palette.getBoundingClientRect().height;
+        }
 
         const newWidth = Math.max(1, Math.floor(availableWidth / Config.SCALE));
         const newHeight = Math.max(1, Math.floor(availableHeight / Config.SCALE));
